@@ -7,4 +7,5 @@ RUN chmod +x /bin/run.sh
 COPY target/release/capture /bin
 RUN chmod +x /bin/capture
 
+CMD ["-s"]
 ENTRYPOINT ["run.sh"]

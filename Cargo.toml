@@ -4,12 +4,12 @@ version = "0.1.0"
 authors = ["Daniel Olano <daniel@olanod.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 thiserror = "1.0.20"
 url = "2.1.1"
 fantoccini = "0.13.1"
-tokio = { version = "0.2.21", features = ["macros"] }
+tokio = { version = "0.2.21", features = ["macros", "io-std"] }
 futures = "0.3.5"
+structopt = { version = "0.3", features = [ "paw" ] }
+paw = "1.0"
 
