@@ -12,4 +12,5 @@ tokio = { version = "0.2.21", features = ["macros", "io-std", "process"] }
 futures = "0.3.5"
 structopt = { version = "0.3", features = [ "paw" ] }
 paw = "1.0"
+which = "4.0.1"
 

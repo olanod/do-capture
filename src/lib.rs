@@ -1,12 +1,15 @@
 use fantoccini::{error as fan_err, Client};
 use futures::prelude::*;
+use std::process::Stdio;
 use thiserror::Error;
 use tokio::process::{Child, Command};
 use url::Url;
+use which::which;
 
 pub struct Session {
     client: Client,
     _driver: Child,
+    _browser: Child,
 }
 
 type ScreenSize = (i32, i32);
@@ -17,7 +20,16 @@ pub mod size {
 
 impl Session {
     pub async fn new() -> Result<Self, Error> {
-        let driver = Command::new("geckodriver")
+        let firefox = which("firefox").map_err(|_| Error::MissingDependency("firefox".into()))?;
+        let geckodriver =
+            which("geckodriver").map_err(|_| Error::MissingDependency("geckodriver".into()))?;
+        let _browser = Command::new(firefox)
+            .kill_on_drop(true)
+            .arg("-headless")
+            .arg("-marionette")
+            .stdout(Stdio::null())
+            .spawn()?;
+        let _driver = Command::new(geckodriver)
             .kill_on_drop(true)
             .arg("--connect-existing")
             .args(&["--marionette-port", "2828"])
@@ -27,7 +39,8 @@ impl Session {
             .await?;
         Ok(Self {
             client,
-            _driver: driver,
+            _driver,
+            _browser,
         })
     }
 
@@ -41,6 +54,8 @@ impl Session {
 
 #[derive(Error, Debug)]
 pub enum Error {
+    #[error("Missing {0} dependency")]
+    MissingDependency(String),
     #[error("WebDriver error")]
     WebDriver(#[from] std::io::Error),
     #[error("Couldn't connect to browser")]

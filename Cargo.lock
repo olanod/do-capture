@@ -272,6 +272,7 @@ dependencies = [
  "thiserror",
  "tokio 0.2.21",
  "url",
+ "which",
 ]
 
 [[package]]
@@ -2079,6 +2080,16 @@ dependencies = [
  "unicode-segmentation",
  "url",
  "warp",
+]
+
+[[package]]
+name = "which"
+version = "4.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b5fe1a9cb33fe7cf77d431070d0223e544b1e4e7f7764bad0a3e691a6678a131"
+dependencies = [
+ "libc",
+ "thiserror",
 ]
 
 [[package]]
