@@ -1,4 +1,4 @@
-use do_capture::Session;
+use do_capture::{size, Session};
 use std::error::Error;
 use structopt::StructOpt;
 use tokio::io::{self, AsyncWriteExt};
@@ -23,7 +23,7 @@ async fn main(args: Args) -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
     let url = args.url.unwrap();
-    let screenshot = Session::new().await?.capture(url).await?;
+    let screenshot = Session::new().await?.capture(url, size::PHONE).await?;
     io::stdout().write_all(&screenshot).await?;
     Ok(())
 }
