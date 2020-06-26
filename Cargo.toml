@@ -8,9 +8,12 @@ edition = "2018"
 thiserror = "1.0.20"
 url = "2.1.1"
 fantoccini = "0.13.1"
-tokio = { version = "0.2.21", features = ["macros", "io-std", "process"] }
+tokio = { version = "0.2.21", features = ["process"], default_features = false }
 futures = "0.3.5"
-structopt = { version = "0.3", features = [ "paw" ] }
-paw = "1.0"
 which = "4.0.1"
+
+[workspace]
+members = [
+	"capture"
+]
 

@@ -48,7 +48,9 @@ impl Session {
         self.client.new_window(true).await?;
         self.client.set_window_size(size.0, size.1).await?;
         self.client.goto(document_url.as_str()).await?;
-        Ok(self.client.screenshot().await?)
+        let capture = self.client.screenshot().await?;
+        self.client.close_window().await?;
+        Ok(capture)
     }
 }
 
@@ -60,6 +62,6 @@ pub enum Error {
     WebDriver(#[from] std::io::Error),
     #[error("Couldn't connect to browser")]
     Connection(#[from] fan_err::NewSessionError),
-    #[error("Browser error")]
+    #[error("Browser error {0}")]
     Browser(#[from] fan_err::CmdError),
 }
