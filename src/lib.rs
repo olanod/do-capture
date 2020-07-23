@@ -6,6 +6,7 @@ use tokio::process::{Child, Command};
 use url::Url;
 use which::which;
 
+#[derive(Debug)]
 pub struct Session {
     client: Client,
     _driver: Child,
