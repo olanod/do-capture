@@ -24,10 +24,17 @@ impl Session {
         let firefox = which("firefox").map_err(|_| Error::MissingDependency("firefox".into()))?;
         let geckodriver =
             which("geckodriver").map_err(|_| Error::MissingDependency("geckodriver".into()))?;
+        Command::new(firefox.clone())
+            .arg("-headless")
+            .args(&["-CreateProfile", "web-capture"])
+            .spawn()?
+            .await
+            .expect("create browser profile");
         let _browser = Command::new(firefox)
             .kill_on_drop(true)
             .arg("-headless")
             .arg("-marionette")
+            .args(&["-P", "web-capture"])
             .stdout(Stdio::null())
             .spawn()?;
         let _driver = Command::new(geckodriver)
