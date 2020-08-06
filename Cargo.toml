@@ -1,6 +1,6 @@
 [package]
 name = "do-capture"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Daniel Olano <daniel@olanod.com>"]
 edition = "2018"
 
@@ -8,9 +8,12 @@ edition = "2018"
 thiserror = "1.0.20"
 url = "2.1.1"
 fantoccini = "0.13.1"
-tokio = { version = "0.2.21", features = ["process"], default_features = false }
+tokio = { version = "0.2.x", features = ["process"], default_features = false }
 futures = "0.3.5"
 which = "4.0.1"
+
+[dev-dependencies]
+tokio = { version = "0.2.x", features = ["macros"], default_features = false }
 
 [workspace]
 members = [
