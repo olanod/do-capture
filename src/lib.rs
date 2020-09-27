@@ -10,8 +10,8 @@ use which::which;
 #[derive(Debug)]
 pub struct Session {
     client: RefCell<Client>,
-    _driver: Child,
-    _browser: Child,
+    _driver: Option<Child>,
+    _browser: Option<Child>,
 }
 
 type ScreenSize = (i32, i32);
@@ -22,7 +22,15 @@ pub mod size {
 }
 
 impl Session {
-    pub async fn new() -> Result<Self, Error> {
+    pub async fn new(url: impl Into<Option<Url>>) -> Result<Self, Error> {
+        if let Some(url) = url.into() {
+            return Ok(Session {
+                client: RefCell::new(Client::new(url.as_str()).map_err(Error::from).await?),
+                _browser: None,
+                _driver: None,
+            });
+        }
+
         let firefox = which("firefox").map_err(|_| Error::MissingDependency("firefox".into()))?;
         let geckodriver =
             which("geckodriver").map_err(|_| Error::MissingDependency("geckodriver".into()))?;
@@ -33,7 +41,7 @@ impl Session {
             .spawn()?
             .await
             .expect("create browser profile");
-        let _browser = Command::new(firefox)
+        let browser = Command::new(firefox)
             .kill_on_drop(true)
             .arg("-headless")
             .arg("-marionette")
@@ -41,7 +49,7 @@ impl Session {
             .stderr(Stdio::null())
             .stdout(Stdio::null())
             .spawn()?;
-        let _driver = Command::new(geckodriver)
+        let driver = Command::new(geckodriver)
             .kill_on_drop(true)
             .arg("--connect-existing")
             .args(&["--marionette-port", "2828"])
@@ -53,8 +61,8 @@ impl Session {
         );
         Ok(Self {
             client,
-            _driver,
-            _browser,
+            _driver: Some(driver),
+            _browser: Some(browser),
         })
     }
 
@@ -90,7 +98,7 @@ mod tests {
 
     #[tokio::test]
     async fn capture_two() -> Result<(), Error> {
-        let s = Session::new().await?;
+        let s = Session::new(None).await?;
 
         s.capture("http://duck.com".parse().unwrap(), size::PHONE)
             .await?;

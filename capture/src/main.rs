@@ -23,7 +23,7 @@ async fn main(args: Args) -> Result<(), Box<dyn Error>> {
         return Ok(());
     }
     let url = args.url.unwrap();
-    let screenshot = Session::new().await?.capture(url, size::PHONE).await?;
+    let screenshot = Session::new(None).await?.capture(url, size::PHONE).await?;
     io::stdout().write_all(&screenshot).await?;
     Ok(())
 }
